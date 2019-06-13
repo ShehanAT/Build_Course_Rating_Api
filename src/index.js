@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //importing the routes file and using it
 const routes = require('./routes');
-app.use('/', routes);
+app.use('/api', routes);
 
 
 //uncomment this route in order to test the global error handler
