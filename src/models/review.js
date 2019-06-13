@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+//schema for the review database model
 const ReviewSchema = new mongoose.Schema({
 	user: {
 		type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +19,7 @@ const ReviewSchema = new mongoose.Schema({
 		type: String
 	}
 });
-
+//adding schema to the Review database model
 const Review = mongoose.model('Review', ReviewSchema);
 
 module.exports = Review;

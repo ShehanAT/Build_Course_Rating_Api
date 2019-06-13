@@ -1,5 +1,10 @@
 'use strict';
+/*
+Shehan Atuk
+Full Stack Javascript Project 11
+06/13/2019
 
+**/
 // load modules
 const express = require('express');
 const morgan = require('morgan');
@@ -45,19 +50,20 @@ const routes = require('./routes');
 app.use('/api', routes);
 
 
-//uncomment this route in order to test the global error handler
+//use this route in order to test the global error handler
+//tested and it works
 app.get('/error', function (req, res) {
   throw new Error('Test error');
 });
 
-// send 404 if no other route matched
+// send 404 if no routes were matched
 app.use((req, res) => {
   res.status(404).json({
     message: 'Route Not Found'
   })
 })
 
-// global error handler
+// This is the global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+//model for the courses
 const CourseSchema = new mongoose.Schema({
 	user: {
 		type: mongoose.Schema.Types.ObjectId,
@@ -43,7 +43,7 @@ const CourseSchema = new mongoose.Schema({
 	]
 
 });
-
+//adding course schema to the course model object
 const Course = mongoose.model('Course', CourseSchema);
 
 module.exports = Course;
