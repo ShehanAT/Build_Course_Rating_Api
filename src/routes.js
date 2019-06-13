@@ -30,10 +30,9 @@ router.post('/users', (req, res, next) => {
 			err.status = 400;
 			return next(err);
 		}
-		res
-			.status(201)
-			.set('Location', '/')
-			.end();
+		res.status(201)
+		.set('Location', '/')
+		.end();
 	});
 });
 //gets all the courses 
@@ -42,9 +41,8 @@ router.get('/courses', (req, res, next) => {
 	Course.find({}, {title: true})
 		.exec((err, courses) =>{
 			if(err) return next(err);
-			res
-				.status(200)
-				.json(courses);
+			res.status(200)
+			.json(courses);
 		})
 });
 //gets a detailed page of the specified course based on the courseId
