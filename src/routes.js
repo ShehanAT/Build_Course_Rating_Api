@@ -30,21 +30,26 @@ router.post('/users', (req, res, next) => {
 			err.status = 400;
 			return next(err);
 		}
-		res
-			.status(201)
-			.set('Location', '/')
-			.end();
+		res.status(201);
+		res.location('/');
+		res.end();
 	});
 });
 //gets all the courses 
 //GET /api/courses 200 
 router.get('/courses', (req, res, next) => {
-	Course.find({}, {title: true})
-		.exec((err, courses) =>{
-			if(err) return next(err);
-			res
-				.status(200)
-				.json(courses);
+	Course.find({})
+	.exec((err, courses) =>{
+		if(err) return next(err);
+		let courseData = [];
+		courses.forEach((item) => {
+			courseData.push({
+				_id: item._id,
+				title: item.title
+			});
+		})
+		res.status(200);
+		res.json(courseData);
 		})
 });
 //gets a detailed page of the specified course based on the courseId
@@ -55,9 +60,9 @@ router.get('/courses/:courseId', (req, res, next) => {
 		.populate({path: 'reviews'})
 		.exec((err, course) => {
 			if(err) return next(err);
-			res
-				.status(200)
-				.json(course);
+			if(course.length === 0) return next(new Error('No such course found'));
+			res.status(200);
+			res.json(course);
 		})
 })
 //creates a new course and adds it to the database, returns error message if request is sent with authorization or if request body contains only minimum data
@@ -69,10 +74,9 @@ router.post('/courses', middleware.requiresLogin, (req, res, next) => {
 			err.status = 400;
 			return next(err);
 		}
-		res
-			.location('/')
-			.status(201)
-			.end();
+		res.location('/');
+		res.status(201);
+		res.end();
 	});
 })
 //updates a course specified by the courseId, returns message error if courseId not found in database
@@ -85,9 +89,9 @@ router.put('/courses/:courseId', middleware.requiresLogin, (req, res, next) => {
 			err.status = 400;
 			return next(err);
 		}
-		res.location('/')
-		.status(204)
-		.json(course);
+		res.location('/');
+		res.status(204);
+		res.json(course);
 	})
 });
 //creates review for the specified courseId and returns nothing
@@ -108,9 +112,9 @@ router.post('/courses/:courseId/reviews', middleware.requiresLogin, (req, res, n
 						err.status = 400;
 						return next(err);
 					}
-					res.location('/')
-					.status(201)
-					.end();
+					res.location('/');
+					res.status(201);
+					res.end();
 				});
 			})
 	});
