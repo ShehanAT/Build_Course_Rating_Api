@@ -2,18 +2,21 @@
 
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user");
-const Course = require("../models/course");
-const Review = require("../models/review");
-const midAuthUser = require("../middleware").authenticateUser;
+const User = require("./models/user");
+const Course = require("./models/course");
+const Review = require("./models/review");
+const middleware = require("./middleware");
 
-router.get('/api/users', midAuthUser, (req, res, next) => {
+
+//get all the users in the database
+router.get('/api/users', middleware.requiresLogin, (req, res, next) => {
 	res
 		.status(200)
 		.json(req.activeUser);
 		return res.end();
 });
 
+//create new user, returns error if existing email address is entered or there is incomplete data
 router.post('/api/users', (req, res, next) => {
 	const user = new User(req.body);
 	user.save((err) => {
@@ -27,7 +30,7 @@ router.post('/api/users', (req, res, next) => {
 			.end();
 	});
 });
-
+//gets all the courses
 router.get('/api/courses', (req, res, next) => {
 	Course.find({}, {title: true})
 		.exec((err, courses) =>{
@@ -37,7 +40,7 @@ router.get('/api/courses', (req, res, next) => {
 				.json(courses);
 		})
 });
-
+//gets the specified course based on the courseId
 router.get('/api/courses/:courseId', (req, res, next) => {
 	Course.findById(req.params.courseId)
 		.populate({path: 'user', select: 'fullName'})
@@ -49,8 +52,8 @@ router.get('/api/courses/:courseId', (req, res, next) => {
 				.json(course);
 		})
 })
-
-router.post('/api/courses', midAuthUser, (req, res, next) => {
+//creates a new course and adds it to the database, returns error message if request is sent with authorization or if request body contains only minimum data
+router.post('/api/courses', middleware.requiresLogin, (req, res, next) => {
 	const course = new Course(req.body);
 	course.save((err) => {
 		if(err){
@@ -63,8 +66,8 @@ router.post('/api/courses', midAuthUser, (req, res, next) => {
 			.end();
 	});
 })
-
-router.put('/api/courses/:courseId', midAuthUser, (req, res, next) => {
+//updates a course specified by the courseId, returns message error if courseId not found in database
+router.put('/api/courses/:courseId', middleware.requiresLogin, (req, res, next) => {
 	Course.findById(req.params.courseId)
 	.update(req.body)
 	.exec((err, course) => {
@@ -77,8 +80,8 @@ router.put('/api/courses/:courseId', midAuthUser, (req, res, next) => {
 		.json(course);
 	})
 });
-
-router.post('/api/courses/:courseId/reviews', midAuthUser, (req, res, next) => {
+//creates review for the specified courseId and returns nothing
+router.post('/api/courses/:courseId/reviews', middleware.requiresLogin, (req, res, next) => {
 	const review = new Review(req.body);
 	review.save((err) => {
 		if(err){
@@ -101,5 +104,5 @@ router.post('/api/courses/:courseId/reviews', midAuthUser, (req, res, next) => {
 			})
 	});
 });
-
+//exporting the file 
 module.exports = router;

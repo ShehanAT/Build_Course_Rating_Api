@@ -23,23 +23,24 @@ const UserSchema = new mongoose.Schema({
 
 });
 
-UserSchema.statics.auth = function(emailAddress, password, callback){
+UserSchema.statics.authenticate = function(emailAddress, password, callback){
 	User.findOne({ emailAddress: emailAddress})
 		.exec( (err, user) => {
 			if(err){
 				return callback(err);
 			}else if( !user ){
-				var err = new Error('User not found in database');
+				var err = new Error('User not found');
 				err.status = 401;
 				return callback(err);
 			}
+			//hashing the password
 			bcrypt.compare(password, user.password, function(err, result){
-				if(result == true || user.password === password){
+				if(result === true){
 					return callback(null, user);
 				}else{
 					return callback();
 				}
-			})
+			});
 		});
 		
 }

@@ -27,18 +27,7 @@ db.on("error", function(err){
 //working on seeding the database once connected to the database
 db.once("open", function(){
   console.log("Mongodb connection successful");
-  // if(process.env.NODE_ENV != 'production'){
-  //   const seeder = require('mongoose-seeder');
-  //   const data = require('../seed-data/data.json');
-  //   seeder.seed(data, {dropDatabase: true})
-  //   .then(function(dbData){
-  //     //the database objects are stored in dbData
 
-  //   })
-  //   .catch(function(err){
-  //     console.log(err);
-  //   });
-  // }
 });
 
 //sends a greeting for the '/' route
@@ -51,14 +40,15 @@ app.get('/', (req, res) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const routes = require('./routes/index');
+//importing the routes file and using it
+const routes = require('./routes');
 app.use('/', routes);
 
 
-// uncomment this route in order to test the global error handler
-// app.get('/error', function (req, res) {
-//   throw new Error('Test error');
-// });
+//uncomment this route in order to test the global error handler
+app.get('/error', function (req, res) {
+  throw new Error('Test error');
+});
 
 // send 404 if no other route matched
 app.use((req, res) => {

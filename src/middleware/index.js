@@ -1,13 +1,12 @@
 const auth = require('basic-auth');
 const User = require('../models/user');
 
-const authenticateUser = (req, res, next) => {
+function requiresLogin(req, res, next){
 	const cred = auth(req);
 	if(cred){
-		User.auth(cred.name, cred.pass, (err, user) => {
-			if(err){
-				return next(err);
-			}else if(!user){
+		User.authenticate(cred.name, cred.pass, (err, user) => {
+			if(err || !user){
+		
 				const err = new Error('Password did not match')
 				err.status = 401;
 				return next(err);
@@ -23,4 +22,4 @@ const authenticateUser = (req, res, next) => {
 	}
 }
 
-module.exports.authenticateUser = authenticateUser;
+module.exports.requiresLogin = requiresLogin;
