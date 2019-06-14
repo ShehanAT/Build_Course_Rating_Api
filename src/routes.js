@@ -30,18 +30,17 @@ router.post('/users', (req, res, next) => {
 			err.status = 400;
 			return next(err);
 		}
-<<<<<<< HEAD
+
 		res.status(201);
 		res.location('/');
 		res.end();
-=======
->>>>>>> 417adbbdceb6c5cb98e0e16f4f29e8b507df0473
+
 	});
 });
 //gets all the courses 
 //GET /api/courses 200 
 router.get('/courses', (req, res, next) => {
-<<<<<<< HEAD
+
 	Course.find({})
 	.exec((err, courses) =>{
 		if(err) return next(err);
@@ -54,8 +53,7 @@ router.get('/courses', (req, res, next) => {
 		})
 		res.status(200);
 		res.json(courseData);
-=======
->>>>>>> 417adbbdceb6c5cb98e0e16f4f29e8b507df0473
+
 		})
 });
 //gets a detailed page of the specified course based on the courseId
@@ -65,8 +63,8 @@ router.get('/courses/:courseId', (req, res, next) => {
 		.populate({path: 'user', select: 'fullName'})
 		.populate({path: 'reviews'})
 		.exec((err, course) => {
-			if(err) return next(err);
-			if(course.length === 0) return next(new Error('No such course found'));
+            if(!course) return next(new Error('No such course found'));
+			if(err) return next(err);	
 			res.status(200);
 			res.json(course);
 		})
