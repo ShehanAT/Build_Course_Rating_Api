@@ -40,7 +40,6 @@ router.post('/users', (req, res, next) => {
 //gets all the courses 
 //GET /api/courses 200 
 router.get('/courses', (req, res, next) => {
-
 	Course.find({})
 	.exec((err, courses) =>{
 		if(err) return next(err);
